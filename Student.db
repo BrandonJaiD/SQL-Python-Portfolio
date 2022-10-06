@@ -1,0 +1,154 @@
+#In this project I created a school database for student information using SQL and menu-driven program to perform the following tasks using python.
+
+import sqlite3
+import pandas as pd
+
+# define connection
+connection = sqlite3.connect('student.db')
+
+#define cursor
+cursor = connection.cursor()
+
+while True:
+    print("Welcome to the student course enrollment system")
+    print("1. Display Students by last name") 
+    print("2. Search Student by Name") 
+    print("3. Display Students by Major") 
+    print("4. Display Majors by department") 
+    print("5. Display Courses") 
+    print("6. Display Courses enrolled by Student") 
+    print("7. Import Student List") 
+    print("8. ADD Student") 
+    print("9. Exit the program")
+    choice = int(input("Please select your choice:"))
+
+    #1
+
+    if choice == 1:
+        sql = """select student_lastname, student_name, student_id, student_email
+                    from students ORDER by student_lastname ASC;"""
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+
+        df = pd.DataFrame(rows, columns=['Last Name', 'Name', 'ID', 'Email'])
+        print()
+        print(df)
+        print()
+
+    #2
+
+    elif choice == 2:
+        stud_name = str(input("Plese enter a student name or part of name: "))
+        sql = """select student_id, student_name, student_lastname, student_email, student_dob, major_id from
+                    students WHERE student_name LIKE '%' ||?|| '%';"""
+        cursor.execute(sql, (stud_name,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            df = pd.DataFrame(result, columns=['ID', 'Name', 'Last Name', 'Email', 'DOB', 'major_id'])
+            print()
+            print(df)
+            print()
+        else:
+            print("\nNo Student is found!\n")
+
+    #3
+
+    elif choice == 3:
+        sql = "select major_id, major_name from majors;"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+
+        df = pd.DataFrame(result, columns=['Major ID', 'Major Name'])
+        print()
+        print(df)
+        print()
+
+        stud_major = input("Please enter major id from the list: ")
+        sql = """select major_name, student_id, student_name, student_lastname from majors
+                INNER JOIN students ON majors.major_id = students.major_id WHERE students.major_id = ?;"""
+        cursor.execute(sql, (stud_major,))
+        rows = cursor.fetchall()
+        if len(rows) > 0:
+            df = pd.DataFrame(rows, columns=['Major', 'ID', 'Name', 'Last Name'])
+            print()
+            print(df)
+            print()
+        else:
+            print("\nNo Major is found!\n")
+
+
+    #4
+
+    elif choice == 4:
+        depart_majors = input("Please enter department id: ")
+        sql = """ select department_name, department_location, major_name from departments
+                INNER JOIN majors ON departments.deparment_id = majors.department_id WHERE majors.department_id = ?;"""
+        cursor.execute(sql, (depart_majors,))
+        rows = cursor.fetchall()
+        if len(rows) > 0:
+            df = pd.DataFrame(rows, columns=['Department', 'Location', 'Major'])
+            print()
+            print(df)
+            print()
+        else:
+            print("\nNo Department is found!\n")
+
+    #5
+
+    elif choice == 5:
+        sql = "select course_name from courses;"
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        df = pd.DataFrame(rows, columns=['Courses'])
+        print()
+        print(df)
+        print()
+
+    #6
+
+    elif choice == 6:
+        sql = """SELECT course_name, student_name, student_lastname FROM courses INNER JOIN
+            enrollments ON enrollments.course_id = courses.course_id INNER JOIN
+            students ON students.student_id = enrollments.student_id"""
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        if len(rows) > 0:
+            df = pd.DataFrame(rows, columns=['Course', 'Name', 'Last Name'])
+            print()
+            print(df)
+            print()
+        else:
+            print("\nNo record is found!\n")
+
+    #7
+
+    elif choice == 7:
+        file = open('students.txt.csv')
+        filename = input("Plese enter file name: ")
+        if filename == "students.txt.csv":
+            for line in file:
+                if line.startswith('9'):
+                    studentinfo = line.split(',')
+                    sql = """INSERT INTO students (student_id, student_name, student_lastname, student_email,
+                    student_dob) VALUES (?, ?, ?, ?, ?);"""
+                    cursor.execute(sql, (studentinfo[0],studentinfo[1],studentinfo[2],studentinfo[3],studentinfo[4]))
+                    cursor.fetchall()
+
+    #8
+
+    elif choice == 8:
+        studentid = input("Enter student ID: ")
+        studentname = input("Enter student Name: ")
+        studentlastname = input("Enter student Last Name: ")
+        studentemail = input("Enter student Email: ")
+        studentdob = input("Enter student DOB in format MM-DD-YYY: ")
+        sql = """INSERT INTO students (student_id, student_name, student_lastname, student_email, student_dob)
+                VALUES (?, ?, ?, ?, ?);"""
+        cursor.execute(sql, (studentid, studentname, studentlastname, studentemail, studentdob,))
+        connection.commit()
+        print("New Student has been Entered!")
+
+    elif choice == 9:
+        break
+    else:
+        print("You choice selected is invalid. Please try again!")
