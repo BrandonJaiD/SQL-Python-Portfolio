@@ -1,4 +1,4 @@
-#In this project I created a school database for student information using SQL and menu-driven program to perform the following tasks using python.
+#In this project I created a school database for student information using SQL and a menu-driven program to perform the following tasks using python.
 
 import sqlite3
 import pandas as pd
