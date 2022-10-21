@@ -1,0 +1,146 @@
+#Built a web-scraping program that gathers data from 10 random Amazon.com product pages and sending data to the database using SQL queries.
+
+import sqlite3
+from bs4 import BeautifulSoup
+from selenium import webdriver
+
+conn = sqlite3.connect('amazon.db')
+c = conn.cursor()
+driver = webdriver.Chrome(executable_path='/Users/bj/Downloads/
+chromedriver')
+content = driver.page_source
+soup = BeautifulSoup(content)
+
+#RANDOM LINK 1
+
+driver.get('https://www.amazon.com/Wilson-Sporting-Goods-Prime-Tennis/')
+results1 = []
+#c.execute ('''CREATE TABLE tennisAmazon(price STR)''')
+sql = '''INSERT INTO tennisAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price1 = element.find('span')
+    if price1 not in results1:
+        #results.append(price1.text)
+        c.execute(sql, (price1,))
+        conn.commit()
+        
+#RANDOM LINK 2
+
+driver.get('https://www.amazon.com/Spider-Man-No-Way-Home-Blu-ray/dp/')
+results2 = []
+#c.execute ('''CREATE TABLE spidermanAmazon(price DECIMAL)''')
+sql = '''INSERT INTO spidermanAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price2 = element.find('span')
+    if price2 not in results2:
+        results1.append(price2.text)
+        c.execute(sql, (price2,))
+        conn.commit()
+        
+#RANDOM LINK 3
+
+driver.get('https://www.amazon.com/dp/B08YD1JLJF/ref=va_live_carousel?')
+results3 = []
+#c.execute ('''CREATE TABLE laptopAmazon(price DECIMAL)''')
+sql = '''INSERT INTO laptopAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price3 = element.find('span')
+    if price3 not in results3:
+        results1.append(price3.text)
+        c.execute(sql, (price3,))
+        conn.commit()
+        
+#RANDOM LINK 4
+
+driver.get('https://www.amazon.com/Callaway-Strata-Complete-Piece-Package/dp/')
+results4 = []
+#c.execute ('''CREATE TABLE golfsetAmazon(price DECIMAL)''')
+sql = '''INSERT INTO golfsetAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price4 = element.find('span')
+    if price4 not in results4:
+        results1.append(price4.text)
+        c.execute(sql, (price4,))
+        conn.commit()
+        
+#RANDOM LINK 5
+
+driver.get('https://www.amazon.com/SKLZ-Basketball-Shatter-Resistant-Backboard')
+results5 = []
+#c.execute ('''CREATE TABLE basketballAmazon(price DECIMAL)''')
+sql = '''INSERT INTO basketballAmazon VALUES(?);'''
+ 
+for element in soup.findAll(attrs='a-price'):
+    price5 = element.find('span')
+    if price5 not in results5:
+        results1.append(price5.text)
+        c.execute(sql, (price5,))
+        conn.commit()
+        
+#RANDOM LINK 6
+
+driver.get('https://www.amazon.com/blurams-Wireless-Security-Detection-Two-Way')
+results6 = []
+#c.execute ('''CREATE TABLE cameraAmazon(price DECIMAL)''')
+sql = '''INSERT INTO cameraAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price6 = element.find('span')
+    if price6 not in results6:
+        results1.append(price6.text)
+        c.execute(sql, (price6,))
+        conn.commit()
+        
+#RANDOM LINK 7
+
+driver.get('https://www.amazon.com/FRIGIDAIRE-EFIC189-Silver-Compact-Silver-Packaging/')
+results7 = []
+#c.execute ('''CREATE TABLE icemakerAmazon(price DECIMAL)''')
+sql = '''INSERT INTO icemakerAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price7 = element.find('span')
+    if price7 not in results1:
+        results7.append(price7.text)
+        c.execute(sql, (price7,))
+        conn.commit()
+        
+#RANDOM LINK 8
+
+driver.get('https://www.amazon.com/HyperX-QuadCast-Condenser-Microphone-Anti-Vibration/dp/')
+results8 = []
+#c.execute ('''CREATE TABLE microphoneAmazon(price DECIMAL)''')
+sql = '''INSERT INTO microphoneAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price8 = element.find('span')
+    if price8 not in results8:
+ 
+results8.append(price8.text)
+        c.execute(sql, (price8,))
+        conn.commit()
+        
+#RANDOM LINK 9
+
+driver.get('https://www.amazon.com/Alesis-Nitro-Electronic-Snare-Cymbals/dp/')
+results9 = []
+#c.execute ('''CREATE TABLE drumsAmazon(price DECIMAL)''')
+sql = '''INSERT INTO drumsAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price9 = element.find('span')
+    if price9 not in results9:
+        results1.append(price9.text)
+        c.execute(sql, (price9,))
+        conn.commit()
+        
+#RANDOM LINK 10
+
+driver.get('https://www.amazon.com/RockJam-Electronic-Keyboard-SuperKit-Headphones/dp/')
+results10 = []
+#c.execute ('''CREATE TABLE pianoAmazon(price DECIMAL)''')
+sql = '''INSERT INTO pianoAmazon VALUES(?);'''
+for element in soup.findAll(attrs='a-price'):
+    price10 = element.find('span')
+    if price10 not in results10:
+        results10.append(price10.text)
+        c.execute(sql, (price10,))
+        conn.commit()
+        
+driver.quit()
